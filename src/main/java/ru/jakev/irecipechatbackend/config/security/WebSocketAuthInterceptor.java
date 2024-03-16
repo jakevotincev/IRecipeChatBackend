@@ -1,5 +1,6 @@
-package ru.jakev.irecipechatbackend.config;
+package ru.jakev.irecipechatbackend.config.security;
 
+import com.sun.security.auth.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
@@ -7,7 +8,9 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.jakev.irecipechatbackend.services.JwtService;
@@ -32,6 +35,7 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
     //todo: add logic with token check in one place
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
+        // todo: move auth to auth manager like decribed here https://stackoverflow.com/questions/30887788/json-web-token-jwt-with-spring-based-sockjs-stomp-web-socket
         final var accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         final var cmd = accessor.getCommand();
         String jwt;
@@ -49,7 +53,17 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
                 UserDetails userDetails = userService
                         .loadUserByUsername(email);
-                if (!jwtService.isTokenValid(jwt, userDetails)) {
+
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    //todo: подумать как принципалов по другому создавать
+                    accessor.setUser(new UserPrincipal(authToken.getName()));
+//                    accessor.setLeaveMutable(true);
+                } else {
                     LOG.error("Token is not valid");
                     throw new SecurityException("Token is not valid");
                 }
@@ -59,6 +73,6 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
             }
 
         }
-        return message;
+        return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
     }
 }

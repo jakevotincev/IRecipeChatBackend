@@ -51,6 +51,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> getUserById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user != null) {
+            return Optional.of(user);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean isUserExists(long id) {
+        return userRepository.existsById(id);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = getUserByEmail(email).orElse(null);
         if (user == null) {

@@ -1,13 +1,12 @@
 package ru.jakev.irecipechatbackend.entities;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author evotintsev
@@ -26,6 +25,11 @@ public class User implements UserDetails {
     private String password;
     @Nonnull
     private String phoneNumber;
+    @OneToMany(mappedBy = "sender")
+    private Set<Message> messages;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Conversation> conversations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -96,5 +100,21 @@ public class User implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+
+    public Set<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(Set<Conversation> conversations) {
+        this.conversations = conversations;
     }
 }

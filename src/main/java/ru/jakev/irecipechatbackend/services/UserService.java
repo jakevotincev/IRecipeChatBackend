@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface UserService extends UserDetailsService {
     boolean saveUser(User user);
     Optional<User> getUserByEmail(String username);
+    Optional<User> getUserById(Long id);
+    boolean isUserExists(long id);
 }

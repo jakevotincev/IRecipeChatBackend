@@ -1,11 +1,17 @@
 package ru.jakev.irecipechatbackend.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.converter.GsonMessageConverter;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import ru.jakev.irecipechatbackend.config.security.WebSocketAuthInterceptor;
+import ru.jakev.irecipechatbackend.websocket.DefaultWebSocketMessageSender;
+import ru.jakev.irecipechatbackend.websocket.WebSocketMessageSender;
 
 /**
  * @author evotintsev
@@ -23,7 +29,7 @@ public class SocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/chat");
+        config.enableSimpleBroker("/all", "/specific");
         config.setApplicationDestinationPrefixes("/app");
     }
 
@@ -38,9 +44,9 @@ public class SocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
         WebSocketMessageBrokerConfigurer.super.configureClientInboundChannel(registration);
     }
 
-//    @Bean
-//    public WebSocketMessageSender simpMessagingTemplate(SimpMessagingTemplate simpMessagingTemplate){
-//        simpMessagingTemplate.setMessageConverter(new GsonMessageConverter());
-//        return new DefaultWebSocketMessageSender(simpMessagingTemplate);
-//    }
+    @Bean
+    public WebSocketMessageSender simpMessagingTemplate(SimpMessagingTemplate simpMessagingTemplate){
+        simpMessagingTemplate.setMessageConverter(new GsonMessageConverter());
+        return new DefaultWebSocketMessageSender(simpMessagingTemplate);
+    }
 }

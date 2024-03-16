@@ -1,4 +1,4 @@
-package ru.jakev.irecipechatbackend.config;
+package ru.jakev.irecipechatbackend.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
