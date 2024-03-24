@@ -27,14 +27,15 @@ public class Message {
     @Nonnull
     private LocalDateTime sendDate;
     @Nonnull
-    private Boolean isRead;
+    @Enumerated(EnumType.STRING)
+    private MessageStatus status;
 
     public static class Builder {
         private Conversation conversation;
         private User sender;
         private String text;
         private LocalDateTime sendDate;
-        private Boolean isRead;
+        private MessageStatus status;
 
         public Builder setConversation(Conversation conversation) {
             this.conversation = conversation;
@@ -56,8 +57,8 @@ public class Message {
             return this;
         }
 
-        public Builder setRead(Boolean read) {
-            isRead = read;
+        public Builder setStatus(MessageStatus status) {
+            this.status = status;
             return this;
         }
 
@@ -67,7 +68,7 @@ public class Message {
             message.setSender(this.sender);
             message.setText(this.text);
             message.setSendDate(this.sendDate);
-            message.setRead(this.isRead);
+            message.setStatus(this.status);
             return message;
         }
     }
@@ -113,12 +114,12 @@ public class Message {
         this.sendDate = sendDate;
     }
 
-    public Boolean getRead() {
-        return isRead;
+    public MessageStatus getStatus() {
+        return status;
     }
 
-    public void setRead(Boolean read) {
-        isRead = read;
+    public void setStatus(MessageStatus status) {
+        this.status = status;
     }
 
     @Override
@@ -129,7 +130,7 @@ public class Message {
                 ", sender=" + sender +
                 ", text='" + text + '\'' +
                 ", sendDate=" + sendDate +
-                ", isRead=" + isRead +
+                ", status=" + status +
                 '}';
     }
 }

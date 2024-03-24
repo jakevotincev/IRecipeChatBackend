@@ -37,7 +37,8 @@ public class ConversationMapperImpl implements ConversationMapper {
         Set<MessageDTO> messages = conversation.getMessages().stream().map(messageMapper::toMessageDTO)
                 .collect(Collectors.toSet());
         //todo: refactor
-        messages.forEach(messageDTO -> messageDTO.setRecipientId(messageDTO.getSenderId() == firstParticipantId ? secondParticipantId : firstParticipantId));
+        messages.forEach(messageDTO -> messageDTO.setRecipientId(messageDTO.getSenderId() == firstParticipantId ?
+                secondParticipantId : firstParticipantId));
 
         return new ConversationDTO(id, firstParticipantId, secondParticipantId, messages);
     }

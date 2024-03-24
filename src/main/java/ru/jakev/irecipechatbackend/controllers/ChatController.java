@@ -9,6 +9,7 @@ import ru.jakev.irecipechatbackend.services.ConversationService;
 import ru.jakev.irecipechatbackend.services.MessageService;
 import ru.jakev.irecipechatbackend.websocket.WebSocketMessageSender;
 import ru.jakev.irecipechatbackend.websocket.messages.MessageDTO;
+import ru.jakev.irecipechatbackend.websocket.messages.MessageSentDTO;
 
 /**
  * @author evotintsev
@@ -39,8 +40,10 @@ public class ChatController {
         messageService.saveMessage(message, conversation);
 
         //todo: refactor
+        User sender = conversation.getUsers().stream().filter(user -> user.getId() == senderId).findFirst().orElse(null);
         User recipient = conversation.getUsers().stream().filter(user -> user.getId() == recipientId).findFirst().orElse(null);
-        if (recipient != null) {
+        if (recipient != null && sender != null) {
+            webSocketMessageSender.sendMessageToUser(sender.getEmail(), "/specific", new MessageSentDTO());
             webSocketMessageSender.sendMessageToUser(recipient.getEmail(), "/specific", message);
         }
     }

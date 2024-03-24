@@ -1,6 +1,6 @@
 package ru.jakev.irecipechatbackend.websocket.messages;
 
-import java.time.LocalDateTime;
+import ru.jakev.irecipechatbackend.entities.MessageStatus;
 
 /**
  * @author evotintsev
@@ -11,7 +11,8 @@ public class MessageDTO {
     private long recipientId;
     private String text;
     private long sendTimestamp;
-    private boolean isRead;
+    private MessageStatus status;
+    private final MessageType type = MessageType.MESSAGE;
 
     public long getSenderId() {
         return senderId;
@@ -37,12 +38,16 @@ public class MessageDTO {
         this.sendTimestamp = sendTimestamp;
     }
 
-    public Boolean getRead() {
-        return isRead;
+    public MessageStatus getStatus() {
+        return status;
     }
 
-    public void setRead(Boolean read) {
-        isRead = read;
+    public void setStatus(MessageStatus status) {
+        this.status = status;
+    }
+
+    public MessageType getType() {
+        return type;
     }
 
     public long getRecipientId() {
@@ -60,7 +65,8 @@ public class MessageDTO {
                 ", recipientId=" + recipientId +
                 ", text='" + text + '\'' +
                 ", sendTimestamp=" + sendTimestamp +
-                ", isRead=" + isRead +
+                ", status=" + status +
+                ", type=" + type +
                 '}';
     }
 }

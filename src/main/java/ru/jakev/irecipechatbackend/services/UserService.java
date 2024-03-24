@@ -11,6 +11,7 @@ import java.util.Optional;
  */
 public interface UserService extends UserDetailsService {
     boolean saveUser(User user);
+    //todo: change return types to dto
     Optional<User> getUserByEmail(String username);
     Optional<User> getUserById(Long id);
     boolean isUserExists(long id);
